@@ -1,5 +1,7 @@
 import PyRSS2Gen
 
+from afeedprocessor.adescription import Description
+
 
 class ItemProcessor:
     def get_title(self, title, item):
@@ -36,7 +38,7 @@ class ItemProcessor:
         return PyRSS2Gen.RSSItem(
             title=self.get_title(item.title, item),
             link=self.get_link(item.link, item),
-            description=self.get_description(item.description, item),
+            description=Description(self.get_description(item.description, item)),
             author=self.get_author(item.author, item),
             categories=self.get_categories(item.categories, item),
             comments=self.get_comments(item.comments, item),

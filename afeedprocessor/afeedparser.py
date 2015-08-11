@@ -12,13 +12,19 @@ class FeedParser:
     def get_first(lst):
         return lst[0] if lst and len(lst) > 0 else None
 
+    @staticmethod
+    def get_terms(lst):
+        if lst is None:
+            return None
+        return [e['term'] for e in lst]
+
     def get_rss_item_for_entry(self, entry):
         return PyRSS2Gen.RSSItem(
             title=entry.get('title'),
             link=entry.get('link'),
             description=entry.get('description'),
             author=entry.get('author'),
-            categories=entry.get('tags'),
+            categories=self.get_terms(entry.get('tags')),
             comments=entry.get('comments'),
             enclosure=self.get_first(entry.get('enclosures')),
             guid=entry.get('id'),
@@ -39,7 +45,7 @@ class FeedParser:
             pubDate=self.date_tuple_to_datetime(feed.get('published_parsed')),
             lastBuildDate=self.date_tuple_to_datetime(feed.get('updated_parsed')),
 
-            categories=feed.get('tags'),
+            categories=self.get_terms(feed.get('tags')),
             generator=feed.get('generator'),
             docs=feed.get('docs'),
             cloud=feed.get('cloud'),

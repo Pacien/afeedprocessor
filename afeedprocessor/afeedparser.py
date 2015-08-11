@@ -19,7 +19,7 @@ class FeedParser:
         return [e['term'] for e in lst]
 
     def get_rss_item_for_entry(self, entry):
-        return PyRSS2Gen.RSSItem(
+        rss_item = PyRSS2Gen.RSSItem(
             title=entry.get('title'),
             link=entry.get('link'),
             description=entry.get('description'),
@@ -32,8 +32,11 @@ class FeedParser:
             source=entry.get('source'),
         )
 
+        rss_item.source_entity = entry
+        return rss_item
+
     def get_rss2_from_feed(self, feed, entries):
-        return PyRSS2Gen.RSS2(
+        rss_feed = PyRSS2Gen.RSS2(
             title=feed.get('title'),
             link=feed.get('link'),
             description=feed.get('subtitle'),
@@ -59,6 +62,9 @@ class FeedParser:
 
             items=[self.get_rss_item_for_entry(entry) for entry in entries],
         )
+
+        rss_feed.source_entity = feed
+        return rss_feed
 
     def parse(self, feed):
         parsed_feed = feedparser.parse(feed)

@@ -13,10 +13,10 @@ class FeedParser:
         return lst[0] if lst and len(lst) > 0 else None
 
     @staticmethod
-    def get_terms(lst):
+    def get_keys(lst, key):
         if lst is None:
             return None
-        return [e['term'] for e in lst]
+        return [e[key] for e in lst]
 
     def get_rss_item_for_entry(self, entry):
         rss_item = PyRSS2Gen.RSSItem(
@@ -24,7 +24,7 @@ class FeedParser:
             link=entry.get('link'),
             description=entry.get('description'),
             author=entry.get('author'),
-            categories=self.get_terms(entry.get('tags')),
+            categories=self.get_keys(entry.get('tags'), 'term'),
             comments=entry.get('comments'),
             enclosure=self.get_first(entry.get('enclosures')),
             guid=entry.get('id'),
@@ -43,12 +43,12 @@ class FeedParser:
 
             language=feed.get('language'),
             copyright=feed.get('rights'),
-            managingEditor=feed.get('contributors'),
+            managingEditor=self.get_first(self.get_keys(feed.get('contributors'), 'name')),
             webMaster=feed.get('publisher'),
             pubDate=self.date_tuple_to_datetime(feed.get('published_parsed')),
             lastBuildDate=self.date_tuple_to_datetime(feed.get('updated_parsed')),
 
-            categories=self.get_terms(feed.get('tags')),
+            categories=self.get_keys(feed.get('tags'), 'term'),
             generator=feed.get('generator'),
             docs=feed.get('docs'),
             cloud=feed.get('cloud'),
